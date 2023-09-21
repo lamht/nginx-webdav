@@ -25,6 +25,5 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: linux/arm64/v8
           push: true
           tags: thanhlam00290/webdav:alpine

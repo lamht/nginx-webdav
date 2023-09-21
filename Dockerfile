@@ -103,4 +103,4 @@ RUN chmod +x entrypoint.sh
 
 EXPOSE 80 443
 
-CMD /entrypoint.sh && nginx -g "daemon off;"
+CMD sh /entrypoint.sh && nginx -g "daemon off;"
