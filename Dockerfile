@@ -27,7 +27,7 @@ ENV GID 1000
 
 RUN \
   build_pkgs="build-base linux-headers openssl-dev pcre-dev wget zlib-dev libxml2-dev libxslt-dev" && \
-  runtime_pkgs="ca-certificates openssl pcre zlib tzdata git libxml2 shadow" && \
+  runtime_pkgs="ca-certificates openssl pcre zlib tzdata git libxml2" && \
   apk --no-cache add ${build_pkgs} && \
   cd /tmp && \
   wget https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
