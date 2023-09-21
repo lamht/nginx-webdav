@@ -22,10 +22,12 @@ ENV NGINX_VERSION=1.25.2
 ENV NGINX_DAV_EXT_VER 3.0.0
 ENV NGINX_FANCYINDEX_VER 0.5.2
 ENV HEADERS_MORE_VER 0.34
+ENV UID 1000
+ENV GID 1000
 
 RUN \
   build_pkgs="build-base linux-headers openssl-dev pcre-dev wget zlib-dev libxml2-dev libxslt-dev" && \
-  runtime_pkgs="ca-certificates openssl pcre zlib tzdata git libxml2" && \
+  runtime_pkgs="ca-certificates openssl pcre zlib tzdata git libxml2 shadow" && \
   apk --no-cache add ${build_pkgs} && \
   cd /tmp && \
   wget https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
@@ -83,21 +85,22 @@ RUN \
   make && \
   make install && \
   sed -i -e 's/#access_log  logs\/access.log  main;/access_log \/dev\/stdout;/' -e 's/#error_log  logs\/error.log  notice;/error_log stderr notice;/' /etc/nginx/nginx.conf && \
-  addgroup -S nginx && \
-  adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx && \
+  addgroup -S -g ${GID} nginx && \
+  adduser -D -S -u ${UID} -h /var/cache/nginx -s /sbin/nologin -G nginx nginx && \
   rm -rf /tmp/* && \
   apk del ${build_pkgs} && \
   apk --no-cache add ${runtime_pkgs} && \
   rm -rf /var/cache/apk/*
 
-RUN mkdir /data 
-  #&& chown nginx:nginx /data
+RUN mkdir /data \
+  && chown -R nginx:nginx /data
 
 VOLUME /data
-VOLUME /config
 
 COPY nginx.conf /etc/nginx/
+COPY entrypoint.sh /
+RUN chmod +x entrypoint.sh
 
 EXPOSE 80 443
 
-CMD ["nginx"]
+CMD /entrypoint.sh && nginx -g "daemon off;"
