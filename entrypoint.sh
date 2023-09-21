@@ -4,7 +4,7 @@ if [ -n "$USERNAME" ] && [ -n "$PASSWORD" ]
 then
     apk add --no-cache apache2-utils
 	htpasswd -bc /etc/nginx/htpasswd $USERNAME $PASSWORD
-    apk add del apache2-utils
+    apk del apache2-utils
 	echo Set Webdav user done.
 else
     echo Using no auth.
