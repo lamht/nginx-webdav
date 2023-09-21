@@ -11,19 +11,14 @@ jobs:
     environment: prod
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: actions/checkout@v4      
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: thanhlam00290/webdav:alpine
+      - name: Build
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/webdav:alpine .
+      - name: Push
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/webdav:alpine
+
